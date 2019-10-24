@@ -9,7 +9,8 @@ set(BASIC_EXAMPLES
   ex-print-thermals
   ex-print-topology
   ex-print-features
-  ex-set-power-limits
+  ex-set-node-power-limit
+  ex-set-socket-power-limits
   ex-dump-counters
   ex-print-counters
   ex-dump-clock-speed
