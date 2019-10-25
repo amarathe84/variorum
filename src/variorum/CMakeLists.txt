@@ -3,20 +3,20 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/variorum_config.h.in"
 
 set(variorum_headers
   config_architecture.h
-  msr_core.h
+#  msr_core.h
   variorum.h
-  variorum_timers.h
-  variorum_cpuid.h
-  variorum_error.h
+#  variorum_timers.h
+#  variorum_cpuid.h
+#  variorum_error.h
   )
 
 set(variorum_sources
   config_architecture.c
-  msr_core.c
+#  msr_core.c
   variorum.c
-  variorum_timers.c
-  variorum_cpuid.c
-  variorum_error.c
+#  variorum_timers.c
+#  variorum_cpuid.c
+# variorum_error.c
   )
 
 set(variorum_deps ""
@@ -29,11 +29,10 @@ set(variorum_includes
   )
 
 if(VARIORUM_WITH_INTEL)
-    add_subdirectory(Intel)
-    list(APPEND variorum_headers Intel/config_intel.h ${variorum_intel_headers})
-    list(APPEND variorum_sources Intel/config_intel.c)
-    list(APPEND variorum_deps $<TARGET_OBJECTS:variorum_intel>)
-    list(APPEND variorum_includes ${CMAKE_CURRENT_SOURCE_DIR}/Intel)
+    add_subdirectory(Nvidia)
+    list(APPEND variorum_headers Nvidia/Volta.h)
+    list(APPEND variorum_sources Nvidia/Volta.c)
+    list(APPEND variorum_includes ${CMAKE_CURRENT_SOURCE_DIR}/Volta)
 endif()
 
 if(BUILD_SHARED_LIBS)
