@@ -70,7 +70,7 @@ int variorum_exit(const char *filename, const char *func_name, int line_num)
 #endif
 #ifdef VARIORUM_WITH_AMD
     free(g_platform.amd_arch);
-#endif 
+#endif
 #ifdef VARIORUM_WITH_IBM
     free(g_platform.ibm_arch);
 #endif
