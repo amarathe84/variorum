@@ -5,6 +5,15 @@
 #include <stdio.h>
 #include <sys/types.h>
 
+#include <nvml.h>
+unsigned int m_total_unit_devices;
+nvmlDevice_t* m_unit_devices_file_desc;
+
+void initNVML();
+void shutdownNVML();
+
+
+
 #define UINT_MAX 4294967295U // taken from limits.h
 #define STD_ENERGY_UNIT 65536.0
 
@@ -29,7 +38,7 @@ enum variorum_unit_conversions_e
 };
 
 /// @brief Structure containing units for energy, time, and power across all
-/// RAPL power domains.
+/// NVML power domains.
 struct rapl_units
 {
     /// @brief Raw 64-bit value stored in MSR_RAPL_POWER_UNIT.
@@ -144,118 +153,36 @@ struct rapl_data
 int get_package_power_limits(struct rapl_units *ru,
                              off_t msr);
 #endif
+void dump_power_data(FILE *writedest);
 
-int get_rapl_power_unit(struct rapl_units *ru,
-                        off_t msr);
+// 
+// void dump_package_power_limit(FILE *writedest,
+//                               off_t msr_power_limit,
+//                               off_t msr_rapl_unit,
+//                               int socket);
+// 
+// int get_package_rapl_limit(const unsigned socket,
+//                            struct rapl_limit *limit1,
+//                            struct rapl_limit *limit2,
+//                            off_t msr_power_limit,
+//                            off_t msr_rapl_unit);
+// 
+// void print_package_power_limit(FILE *writedest,
+//                               off_t msr_power_limit,
+//                               off_t msr_rapl_unit,
+//                               int socket);
+// 
+// int set_package_power_limit(const unsigned socket,
+//                             int package_power_limit,
+//                             off_t msr_power_limit,
+//                             off_t msr_rapl_unit);
 
-void dump_package_power_limit(FILE *writedest,
-                              off_t msr_power_limit,
-                              off_t msr_rapl_unit,
-                              int socket);
 
-void dump_dram_power_limit(FILE *writedest,
-                           off_t msr_power_limit,
-                           off_t msr_rapl_unit,
-                           int socket);
-
-void print_dram_power_limit(FILE *writedest,
-                            off_t msr_power_limit,
-                            off_t msr_rapl_unit,
-                            int socket);
-
-int get_package_rapl_limit(const unsigned socket,
-                           struct rapl_limit *limit1,
-                           struct rapl_limit *limit2,
-                           off_t msr_power_limit,
-                           off_t msr_rapl_unit);
-
-int get_dram_rapl_limit(const unsigned socket,
-                        struct rapl_limit *limit,
-                        off_t msr_power_limit,
-                        off_t msr_rapl_unit);
-
-void dump_rapl_power_unit(FILE *writedest,
-                          off_t msr);
-
-int get_rapl_power_info(const unsigned socket,
-                        struct rapl_power_info *info,
-                        off_t msr);
-
-void dump_package_power_info(FILE *writedest,
-                             off_t msr,
-                             int socket);
-
-void print_rapl_power_unit(FILE *writedest,
-                           off_t msr);
-
-void print_package_power_limit(FILE *writedest,
-                               off_t msr_power_limit,
-                               off_t msr_rapl_unit,
-                               int socket);
-
-void print_package_power_info(FILE *writedest,
-                              off_t msr,
-                              int socket);
-
-int set_package_power_limit(const unsigned socket,
-                            int package_power_limit,
-                            off_t msr_power_limit,
-                            off_t msr_rapl_unit);
-
-void dump_power_data(FILE *writedest,
-                     off_t msr_power_limit,
-                     off_t msr_rapl_unit,
-                     off_t msr_pkg_energy_status,
-                     off_t msr_dram_energy_status);
-
-void print_power_data(FILE *writedest,
-                      off_t msr_power_limit,
-                      off_t msr_rapl_unit,
-                      off_t msr_pkg_energy_status,
-                      off_t msr_dram_energy_status);
-
-/// @brief Store the RAPL data on the heap.
-///
-/// @param [out] data Pointer to measurements of energy, time, and power data
-///        from a given RAPL power domain.
-///
-/// @return 0 if successful, else -1 if setflags() fails.
-int rapl_storage(struct rapl_data **data);
-
-/// @brief Read all available RAPL data for a given socket.
-///
-/// @param [in] msr_rapl_unit Unique MSR address for MSR_RAPL_POWER_UNIT.
-/// @param [in] msr_pkg_energy_status Unique MSR address for MSR_PKG_ENERGY_STATUS.
-/// @param [in] msr_dram_energy_status Unique MSR address for MSR_DRAM_ENERGY_STATUS.
-///
-/// @return 0 if successful, else -1 if rapl_storage() fails.
-int read_rapl_data(off_t msr_rapl_unit,
-                   off_t msr_pkg_energy_status,
-                   off_t msr_dram_energy_status);
-
-/// @brief Read RAPL data and compute difference in readings taken at two
-/// instances in time.
-///
-/// @param [in] msr_rapl_unit Unique MSR address for MSR_RAPL_POWER_UNIT.
-/// @param [in] msr_pkg_energy_status Unique MSR address for MSR_PKG_ENERGY_STATUS.
-/// @param [in] msr_dram_energy_status Unique MSR address for MSR_DRAM_ENERGY_STATUS.
-///
-/// @return 0 if successful, else -1 if rapl_storage() fails.
-int get_power(off_t msr_rapl_unit,
-              off_t msr_pkg_energy_status,
-              off_t msr_dram_energy_status);
-
-void get_all_power_data(FILE *writedest,
-                        off_t msr_pkg_power_limit,
-                        off_t msr_dram_power_limit,
-                        off_t msr_rapl_unit,
-                        off_t msr_package_energy_status,
-                        off_t msr_dram_energy_status);
-
-/// @brief Compute difference in readings taken at two instances in time.
-///
-/// @return 0 if successful, else -1 if rapl_storage() fails.
-int delta_rapl_data(off_t msr_rapl_unit);
+// void print_power_data(FILE *writedest,
+//                       off_t msr_power_limit,
+//                       off_t msr_rapl_unit,
+//                       off_t msr_pkg_energy_status,
+//                       off_t msr_dram_energy_status);
 
 #endif
 
