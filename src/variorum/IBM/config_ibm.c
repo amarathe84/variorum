@@ -8,17 +8,17 @@
 
 uint64_t *detect_ibm_arch(void)
 {
-	// fprintf(stdout, "Entered %s\n", __FUNCTION__);
-	/* Power8 is unimplemented. This is the current hack for Power9 */ 
+    //fprintf(stdout, "Entered %s\n", __FUNCTION__);
+    /* Power8 is unimplemented. This is the current hack for Power9 */ 
     uint64_t *model =  (uint64_t *) malloc(sizeof(uint64_t));
-	*model = 9; 
+    *model = 9;
     return model;
 }
 
 int set_ibm_func_ptrs(void)
 {
     int err = 0;
-	// fprintf(stdout, "Entered %s\n", __FUNCTION__);
+	//fprintf(stdout, "Entered %s\n", __FUNCTION__);
 
     if (*g_platform.ibm_arch == POWER9)
     {
