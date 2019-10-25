@@ -37,10 +37,8 @@ endif()
 ### Add our examples
 add_subdirectory(examples)
 
-if(VARIORUM_WITH_INTEL)
-    ### Add powmon sampler
-    add_subdirectory(powmon)
-endif()
+### Add powmon sampler
+add_subdirectory(powmon)
 
 ### Create CMake importable exports
 install(EXPORT variorum DESTINATION cmake)
