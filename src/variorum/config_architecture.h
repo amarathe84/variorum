@@ -61,6 +61,11 @@ enum ibm_arch_e
     POWER9 = 9, // Power9
 };
 
+enum nvidia_arch_e
+{
+    VOLTA= 0, // Power9
+};
+
 /// @brief Mapping topology information.
 struct map
 {

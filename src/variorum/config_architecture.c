@@ -97,7 +97,7 @@ int variorum_detect_arch(void)
     g_platform.ibm_arch = detect_ibm_arch();
 #endif
 #ifdef VARIORUM_WITH_GPU
-    //g_platform.gpu_arch = detect_gpu_arch();
+    g_platform.gpu_arch = detect_gpu_arch();
 #endif
 
 #if defined(VARIORUM_LOG) && defined(VARIORUM_WITH_INTEL)
@@ -105,6 +105,9 @@ int variorum_detect_arch(void)
 #endif
 #if defined(VARIORUM_LOG) && defined(VARIORUM_WITH_IBM)
     printf("IBM Model: 0x%lx\n", *g_platform.ibm_arch);
+#endif
+#if defined(VARIORUM_LOG) && defined(VARIORUM_WITH_GPU)
+    printf("NVIDIA Model: 0x%lx\n", *g_platform.gpu_arch);
 #endif
 
     if (g_platform.intel_arch == NULL &&
@@ -237,6 +240,13 @@ int variorum_set_func_ptrs()
 #endif
 #ifdef VARIORUM_WITH_IBM
     err = set_ibm_func_ptrs();
+    if (err)
+    {
+        return err;
+    }
+#endif
+#ifdef VARIORUM_WITH_GPU
+    err = set_nvidia_func_ptrs();
     if (err)
     {
         return err;
