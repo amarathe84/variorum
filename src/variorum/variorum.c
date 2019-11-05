@@ -68,7 +68,7 @@ int monitoring(FILE *output)
     return err;
 }
 
-int dump_power_limits(void)
+int print_power_limits(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
@@ -94,7 +94,7 @@ int dump_power_limits(void)
     return err;
 }
 
-int print_power_limits(void)
+int print_verbose_power_limits(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
@@ -295,7 +295,7 @@ int print_features(void)
     return err;
 }
 
-int dump_thermals(void)
+int print_thermals(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
@@ -321,7 +321,7 @@ int dump_thermals(void)
     return err;
 }
 
-int print_thermals(void)
+int print_verbose_thermals(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
@@ -347,7 +347,7 @@ int print_thermals(void)
     return err;
 }
 
-int dump_counters(void)
+int print_counters(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
@@ -373,7 +373,7 @@ int dump_counters(void)
     return err;
 }
 
-int print_counters(void)
+int print_verbose_counters(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
@@ -399,7 +399,7 @@ int print_counters(void)
     return err;
 }
 
-int dump_clock_speed(void)
+int print_clock_speed(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
@@ -425,7 +425,7 @@ int dump_clock_speed(void)
     return err;
 }
 
-int print_clock_speed(void)
+int print_verbose_clock_speed(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
@@ -451,7 +451,7 @@ int print_clock_speed(void)
     return err;
 }
 
-int dump_power(void)
+int print_power(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
@@ -477,7 +477,7 @@ int dump_power(void)
     return err;
 }
 
-int print_power(void)
+int print_verbose_power(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
@@ -503,7 +503,7 @@ int print_power(void)
     return err;
 }
 
-int dump_hyperthreading(void)
+int print_hyperthreading(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
@@ -529,7 +529,7 @@ int dump_hyperthreading(void)
     return err;
 }
 
-int dump_turbo(void)
+int print_turbo(void)
 {
     int err = 0;
     err = variorum_enter(__FILE__, __FUNCTION__, __LINE__);
