@@ -22,6 +22,10 @@
 #include <config_ibm.h>
 #endif
 
+#ifdef VARIORUM_WITH_NVIDIA
+#include <config_nvidia.h>
+#endif
+
 int variorum_enter(const char *filename, const char *func_name, int line_num)
 {
     int err = 0;
@@ -76,7 +80,7 @@ int variorum_exit(const char *filename, const char *func_name, int line_num)
 #ifdef VARIORUM_WITH_IBM
     free(g_platform.ibm_arch);
 #endif
-#ifdef VARIORUM_WITH_GPU
+#ifdef VARIORUM_WITH_NVIDIA
     free(g_platform.gpu_arch);
 #endif
 
@@ -94,8 +98,11 @@ int variorum_detect_arch(void)
 #ifdef VARIORUM_WITH_IBM
     g_platform.ibm_arch = detect_ibm_arch();
 #endif
-#ifdef VARIORUM_WITH_GPU
+#ifdef VARIORUM_WITH_NVIDIA
     //g_platform.gpu_arch = detect_gpu_arch();
+#endif
+#ifdef VARIORUM_WITH_NVIDIA
+    g_platform.nvidia_arch = detect_nvidia_arch();
 #endif
 
 #if defined(VARIORUM_LOG) && defined(VARIORUM_WITH_INTEL)
@@ -108,6 +115,7 @@ int variorum_detect_arch(void)
     if (g_platform.intel_arch == NULL &&
         g_platform.amd_arch   == NULL &&
         g_platform.ibm_arch   == NULL &&
+        g_platform.nvidia_arch   == NULL &&
         g_platform.gpu_arch   == NULL)
     {
         variorum_error_handler("No architectures detected", VARIORUM_ERROR_RUNTIME, getenv("HOSTNAME"), __FILE__, __FUNCTION__, __LINE__);
@@ -195,7 +203,13 @@ int variorum_set_func_ptrs()
 #ifdef VARIORUM_WITH_IBM
     err = set_ibm_func_ptrs();
 #endif
-    return err;
+#ifdef VARIORUM_WITH_NVIDIA
+    err = set_nvidia_func_ptrs();
+    if (err)
+    {
+        return err;
+    }
+#endif
 }
 
 ////setfixedcounters = fixed_ctr0,
