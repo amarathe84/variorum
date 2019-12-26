@@ -59,16 +59,9 @@ enum intel_arch_e
     FM_06_57 = 87   // Knights Landing
 };
 
-/// @brief List of IBM family and models.
-/// @todo: we need to find architecture detection info here.
-enum ibm_arch_e
+enum ibm_arch_w
 {
-    POWER9 = 9, // Power9
-};
-
-enum nvidia_arch_e
-{
-    VOLTA= 0, // Power9
+    POWER9 = 9	//Power9, note: we need to find architecture detection info here. 
 };
 
 /// @brief Mapping topology information.

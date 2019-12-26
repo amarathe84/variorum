@@ -74,7 +74,7 @@ int variorum_exit(const char *filename, const char *func_name, int line_num)
 #endif
 #ifdef VARIORUM_WITH_AMD
     free(g_platform.amd_arch);
-#endif
+#endif 
 #ifdef VARIORUM_WITH_IBM
     free(g_platform.ibm_arch);
 #endif
@@ -102,8 +102,12 @@ int variorum_detect_arch(void)
     g_platform.ibm_arch = detect_ibm_arch();
 #endif
 #ifdef VARIORUM_WITH_GPU
-    g_platform.gpu_arch = detect_gpu_arch();
+    //g_platform.gpu_arch = detect_gpu_arch();
 #endif
+
+if (g_platform.intel_arch == NULL && g_platform.amd_arch ==NULL && 
+        g_platform.ibm_arch == NULL && g_platform.gpu_arch == NULL) 
+    return VARIORUM_ERROR_UNSUPPORTED_ARCH;
 
 #if defined(VARIORUM_LOG) && defined(VARIORUM_WITH_INTEL)
     printf("Intel Model: 0x%lx\n", *g_platform.intel_arch);
@@ -243,20 +247,14 @@ int variorum_set_func_ptrs()
         return err;
     }
 #endif
+
 #ifdef VARIORUM_WITH_IBM
-    err = set_ibm_func_ptrs();
-    if (err)
-    {
-        return err;
-    }
+   err = set_ibm_func_ptrs();  
+#else
+   variorum_error_handler("No architectures detected", VARIORUM_ERROR_RUNTIME, getenv("HOSTNAME"), __FILE__, __FUNCTION__, __LINE__);
+   return VARIORUM_ERROR_RUNTIME;
 #endif
-#ifdef VARIORUM_WITH_GPU
-    err = set_nvidia_func_ptrs();
-    if (err)
-    {
-        return err;
-    }
-#endif
+   return err;
 }
 
 ////setfixedcounters = fixed_ctr0,
