@@ -1,9 +1,9 @@
 set(variorum_ibm_headers
-${CMAKE_CURRENT_SOURCE_DIR}/Power9.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/Power9.h
   CACHE INTERNAL "")
 
 set(variorum_ibm_sources
-${CMAKE_CURRENT_SOURCE_DIR}/Power9.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/Power9.c
   CACHE INTERNAL "")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${variorum_includes})

@@ -37,7 +37,7 @@ endif()
 
 if(VARIORUM_WITH_IBM)
     add_subdirectory(IBM)
-    list(APPEND variorum_headers IBM/config_ibm.h ${variorum_intel_headers})
+    list(APPEND variorum_headers IBM/config_ibm.h ${variorum_ibm_headers})
     list(APPEND variorum_sources IBM/config_ibm.c)
     list(APPEND variorum_deps $<TARGET_OBJECTS:variorum_ibm>)
     list(APPEND variorum_includes ${CMAKE_CURRENT_SOURCE_DIR}/IBM)
