@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 #include <config_architecture.h>
 #include <Power9.h>
@@ -7,18 +6,13 @@
 
 // #define FILENAME_SIZE 1024
 
-int p9_get_power(void)
+int p9_get_power()
 {
-#ifdef VARIORUM_LOG
-    printf("Running %s\n", __FUNCTION__);
-#endif
+    fprintf(stdout, "Entered %s\n", __FUNCTION__);
 }
 
-int p9_get_power_limits(void)
+int p9_get_power_limits()
 {
-#ifdef VARIORUM_LOG
-    printf("Running %s\n", __FUNCTION__);
-#endif
     // fprintf(stdout, "Entered %s\n", __FUNCTION__);
     char hostname[1024];
     FILE *fp = NULL;
@@ -57,13 +51,10 @@ int p9_get_power_limits(void)
 
 int p9_set_and_verify_power_limit(int pcap_new)
 {
-#ifdef VARIORUM_LOG
-    printf("Running %s with value %d\n", __FUNCTION__, pcap_new);
-#endif
-
+    fprintf(stdout, "Entered %s with value %d\n", __FUNCTION__, pcap_new);
     char hostname[1024];
     FILE *fp = NULL;
-    int pcap_test = 0;
+    int pcap_test=0;
 
     gethostname(hostname, 1024);
 
@@ -84,7 +75,8 @@ int p9_set_and_verify_power_limit(int pcap_new)
     fp = fopen("/sys/firmware/opal/powercap/system-powercap/powercap-current", "w+");
     if (fp == NULL)
     {
-        variorum_error_handler("Incorrect permissions on OPAL files", VARIORUM_ERROR_INVAL, getenv("HOSTNAME"), __FILE__, __FUNCTION__, __LINE__);
+        sprintf(variorum_error_msg, "Incorrect permissions on OPAL files");
+        variorum_error_handler(variorum_error_msg, VARIORUM_ERROR_INVAL, getenv("HOSTNAME"), __FILE__, __FUNCTION__, __LINE__);
         return -1;
     }
     fprintf(fp, "%d", pcap_new);
@@ -109,13 +101,10 @@ int p9_set_and_verify_power_limit(int pcap_new)
 
 int p9_set_power_limit(int pcap_new)
 {
-#ifdef VARIORUM_LOG
-    printf("Running %s with value %d\n", __FUNCTION__, pcap_new);
-#endif
-
+    fprintf(stdout, "Entered %s with value %d\n", __FUNCTION__, pcap_new);
     char hostname[1024];
     FILE *fp = NULL;
-    int pcap_test = 0;
+    int pcap_test=0;
 
     gethostname(hostname, 1024);
 
@@ -128,7 +117,8 @@ int p9_set_power_limit(int pcap_new)
     fp = fopen("/sys/firmware/opal/powercap/system-powercap/powercap-current", "w+");
     if (fp == NULL)
     {
-        variorum_error_handler("Incorrect permissions on OPAL files", VARIORUM_ERROR_INVAL, getenv("HOSTNAME"), __FILE__, __FUNCTION__, __LINE__);
+        sprintf(variorum_error_msg, "Incorrect permissions on OPAL files");
+        variorum_error_handler(variorum_error_msg, VARIORUM_ERROR_INVAL, getenv("HOSTNAME"), __FILE__, __FUNCTION__, __LINE__);
         return -1;
     }
 
