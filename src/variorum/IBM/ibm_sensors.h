@@ -134,6 +134,9 @@ void print_power_sensors(int chipid,
                          FILE *output,
                          const void *buf);
 
+void print_all_sensor_header(FILE *output,
+                             const void *buf);
+
 void print_all_sensors(int chipid,
                        FILE *output,
                        const void *buf);

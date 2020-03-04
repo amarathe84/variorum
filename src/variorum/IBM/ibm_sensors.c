@@ -193,6 +193,57 @@ void print_power_sensors (int chipid, int long_ver, FILE *output, const void *bu
     }
 }
 
+void print_all_sensor_header (FILE *output, const void *buf)
+{
+    struct occ_sensor_data_header *hb;
+    struct occ_sensor_name *md;
+    int i = 0;
+    int energy_offset = 0;
+    static struct timeval start;
+    struct timeval now;
+
+    hb = (struct occ_sensor_data_header *)(uint64_t)buf;
+    md = (struct occ_sensor_name *)((uint64_t)hb + be32toh(hb->names_offset));
+
+    fprintf(output, "_IBMPOWER | Hostname | Socket | Timestamp | ");
+
+    for (i = 0; i < be16toh(hb->nr_sensors); i++)
+    {
+        uint32_t offset = be32toh(md[i].reading_offset);
+        uint32_t scale = be32toh(md[i].scale_factor);
+        uint64_t sample;
+
+        if (md[i].structure_type == OCC_SENSOR_READING_FULL)
+        {
+            sample = read_sensor(hb, offset, SENSOR_SAMPLE);
+        }
+        else
+        {
+            sample = read_counter(hb, offset);
+        }
+
+        if (be16toh(md[i].type) ==OCC_SENSOR_TYPE_POWER)
+        {
+            if(!energy_offset) {
+                energy_offset = i;
+            }
+            uint64_t energy = read_sensor(hb, offset, SENSOR_ACCUMULATOR);
+            uint32_t freq = be32toh(md[i].freq);
+
+            fprintf(output, "Scale%02d | Energy%02d ", i - energy_offset, i - energy_offset);
+        }
+        else
+        {
+            fprintf(output, "%s ", md[i].name);
+        }
+
+        if (i < be16toh(hb->nr_sensors) - 1) {
+            fprintf(output, "| ");
+        }
+    }
+    fprintf(output,"\n"); // Add end of line.
+}
+
 void print_all_sensors (int chipid, FILE *output, const void *buf)
 {
     struct occ_sensor_data_header *hb;
@@ -202,6 +253,7 @@ void print_all_sensors (int chipid, FILE *output, const void *buf)
     char hostname[1024];
     static struct timeval start;
     struct timeval now;
+    int energy_offset = 0;
 
     /* Note that the timestamps here will be different for each socket. We
      * don't have the equivalent of batching yet, if we read the whole buffer
@@ -213,6 +265,7 @@ void print_all_sensors (int chipid, FILE *output, const void *buf)
 
     if (!init)
     {
+        print_all_sensor_header (output, buf);
         init = 1;
         gettimeofday(&start, NULL);
     }
@@ -222,7 +275,7 @@ void print_all_sensors (int chipid, FILE *output, const void *buf)
     hb = (struct occ_sensor_data_header *)(uint64_t)buf;
     md = (struct occ_sensor_name *)((uint64_t)hb + be32toh(hb->names_offset));
 
-    fprintf(output, "_IBMPOWER Hostname: %s Socket %d Timestamp %lf ", hostname, chipid,
+    fprintf(output, "_IBMPOWER | %s | %d | %lf | ", hostname, chipid,
             now.tv_sec-start.tv_sec + (now.tv_usec-start.tv_usec)/1000000.0);
 
     for (i = 0; i < be16toh(hb->nr_sensors); i++)
@@ -245,18 +298,25 @@ void print_all_sensors (int chipid, FILE *output, const void *buf)
             uint64_t energy = read_sensor(hb, offset, SENSOR_ACCUMULATOR);
             uint32_t freq = be32toh(md[i].freq);
 
+            if(!energy_offset) {
+                energy_offset = i;
+            }
+
             // Note that we're not capturing timestamp here, the common timestamp printed
             // is the one from the beginning of the loop.
-            fprintf(output, "%s %lu ENERGY %lu ", md[i].name,
+            fprintf(output, "%lu | %lu ",
                     (uint64_t)(sample * TO_FP(scale)),
                     (uint64_t)(energy / TO_FP(freq)));
         }
         else
         {
-            fprintf(output, "%s %lu ", md[i].name,
+            fprintf(output, "%lu ",
                     (uint64_t)(sample * TO_FP(scale)));
         }
 
+        if (i < be16toh(hb->nr_sensors) - 1) {
+            fprintf(output, "| ");
+        }
     }
     fprintf(output,"\n"); // Add end of line.
 }
