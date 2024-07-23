@@ -9,12 +9,12 @@
 #include <stdio.h>
 
 static int amHighlander = -1;
-static int do_not_use = 0;
+static int do_not_use = 1;
 static sem_t *semk = NULL;
 static sem_t *seml = NULL;
 
 int function_not_called(void) {
-
+    sleep(10);
 }
 
 /// @brief Determines/initializes the process highlander status.
