@@ -42,7 +42,7 @@ function ThemeNav () {
                 setInterval(function () { if (self.winResize) self.onResize(); }, 25);
                 self.onResize();
             });
-        };
+        }
     };
 
     nav.init = function ($) {
@@ -145,7 +145,7 @@ function ThemeNav () {
     }
 
     return nav;
-};
+}
 
 module.exports.ThemeNav = ThemeNav();
 
